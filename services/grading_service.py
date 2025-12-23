@@ -7,6 +7,9 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
+# Local imports
+from config import GEMINI_MODEL
+
 
 # System prompt for IELTS grading
 SYSTEM_INSTRUCTION = """You are an EXPERT IELTS Speaking Examiner with 20+ years of experience. Your task is to provide a highly detailed, evidence-based evaluation of the student's speaking performance.
@@ -94,7 +97,7 @@ def grade_submission(questions: list, transcripts: list) -> dict:
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
+            model=GEMINI_MODEL,
             contents=user_prompt,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,

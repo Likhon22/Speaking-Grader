@@ -12,7 +12,7 @@ def test_connection():
         return
 
     client = genai.Client(api_key=api_key)
-    model_name = "gemini-2.5-flash-lite"
+    model_name = "gemini-2.5-flash"
     
     print(f"Testing model: {model_name}...")
     

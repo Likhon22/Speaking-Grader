@@ -10,7 +10,7 @@ VOICE_OPTIONS = {
 }
 
 # Gemini Model
-GEMINI_MODEL = "gemini-2.5-flash-lite"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 # CSS Styles for Mobile App Simulation
 CSS_STYLES = """
