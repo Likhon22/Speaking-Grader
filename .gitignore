@@ -29,7 +29,7 @@ ENV/
 .env
 
 # Streamlit
-.streamlit/
+# .streamlit/
 
 # IDEs
 .vscode/
