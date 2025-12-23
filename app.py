@@ -171,6 +171,16 @@ def main():
             with st.spinner("Transcribing your answer..."):
                 transcript = transcribe_audio(audio['bytes'], whisper_model)
             
+            # Validation: Check if transcript is empty or too short
+            words = transcript.split()
+            if not transcript or len(words) < 3:
+                st.warning("⚠️ Original audio was too short or silent. Please try recording again with a fuller answer.")
+                # Clear any previous answer for this question to prevent accidental submission
+                if len(st.session_state.answers) > current_q:
+                    st.session_state.answers[current_q] = ""
+                # We don't show the submission buttons if the answer is invalid
+                st.stop() 
+
             st.markdown("**Your transcribed answer:**")
             with st.container(height=150):
                 st.info(transcript)
