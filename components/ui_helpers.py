@@ -125,20 +125,20 @@ def display_results(result: dict):
             <div class="suggestion-card">
                 <div class="suggestion-header">
                     <div class="icon-box {icon_class}">{icon_symbol}</div>
-                    <div style="font-weight: bold; color: #37474F;">{type_label}</div>
+                    <div class="suggestion-type">{type_label}</div>
                 </div>
-                <div style="margin-bottom: 5px;">
-                    <span style="color: #78909C;">You said:</span> 
-                    <span style="color: #37474F; font-weight: 500;">"{err.get('original_phrase', '')}"</span>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <span style="color: #00C853; font-weight: bold;">Better:</span> 
-                    <span style="color: #2E7D32; font-weight: 600;">"{err.get('correction', '')}"</span>
-                </div>
-                <div class="correction-box">
-                    <div style="display: flex; gap: 10px;">
-                        <span>💡</span>
-                        <span style="color: #455A64; font-size: 0.95rem;">{explanation}</span>
+                <div class="suggestion-content">
+                    <div class="said-block">
+                        <div class="said-label">YOU SAID</div>
+                        <div class="said-text">"{err.get('original_phrase', '')}"</div>
+                    </div>
+                    <div class="better-block">
+                        <div class="better-label">BETTER</div>
+                        <div class="better-text">"{err.get('correction', '')}"</div>
+                    </div>
+                    <div class="insight-box">
+                        <span class="insight-icon">💡</span>
+                        <span class="insight-text">{explanation}</span>
                     </div>
                 </div>
             </div>

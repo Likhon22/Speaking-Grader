@@ -55,6 +55,8 @@ def main():
         st.session_state.replay_count = 0
     if 'voice' not in st.session_state:
         st.session_state.voice = "en-US-ChristopherNeural"
+    if 'is_processing' not in st.session_state:
+        st.session_state.is_processing = False
     
     # Load Whisper model
     with st.spinner("Loading speech recognition model..."):
@@ -72,7 +74,7 @@ def main():
         **Tip:** Speak clearly and aim for 1-2 minutes per answer.
         """)
         
-        if st.button("🚀 Start Test", use_container_width=True):
+        if st.button("🚀 Start Test", type="primary", use_container_width=True):
             st.session_state.test_started = True
             st.session_state.audio_played = False
             st.rerun()
@@ -137,22 +139,23 @@ def main():
                 st.session_state.audio_played = True
                 st.rerun()
         
-        # Replay button
-        if st.button("🔄 Replay Question"):
-            st.session_state.replay_count += 1
-            audio_bytes = text_to_speech(question, st.session_state.voice)
-            audio_base64 = base64.b64encode(audio_bytes).decode()
-            st.markdown(f"""
-            <audio autoplay key={st.session_state.replay_count}>
-                <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-            </audio>
-            """, unsafe_allow_html=True)
-        
-        st.markdown("---")
-        st.markdown("### 🎙️ Record Your Answer")
-        
-        # Microphone recorder (Only show if audio has played)
-        if st.session_state.audio_played:
+        if st.session_state.is_processing:
+             # Standardized indicator - sits cleaner without aggressive negative margins
+             st.markdown('<p class="thinking-text" style="margin-top: 10px;">🧠 Analyzing your answer...</p>', unsafe_allow_html=True)
+             audio = None
+        elif st.session_state.audio_played:
+            # Replay & Recording Header - Integrated on one line
+            col_title, col_replay = st.columns([0.8, 0.2])
+            with col_title:
+                st.markdown("### 🎙️ Record Answer")
+            with col_replay:
+                st.markdown('<div class="replay-container"></div>', unsafe_allow_html=True)
+                if st.button("↻", key=f"replay_{current_q}"):
+                    st.session_state.replay_count += 1
+                    st.session_state.audio_played = False # Reset to hide recorder
+                    st.rerun()
+            
+            # Microphone recorder
             audio = mic_recorder(
                 start_prompt="⏺️ Start Recording",
                 stop_prompt="⏹️ Stop Recording",
@@ -161,15 +164,22 @@ def main():
                 key=f"recorder_{current_q}"
             )
         else:
-            st.info("Please listen to the question first...")
+            st.markdown("""
+            <div style="text-align: center; color: #78909C; padding: 1.5rem; border: 1px dashed #B2DFDB; border-radius: 20px;">
+                <p>🔊 Examiner is speaking...</p>
+                <small>The recorder will appear once the question finishes.</small>
+            </div>
+            """, unsafe_allow_html=True)
             audio = None
         
         if audio:
             st.audio(audio['bytes'], format='audio/wav')
             
-            # Transcribe
+            # Transcribe - Subtle indicator
             with st.spinner("Transcribing your answer..."):
+                st.session_state.is_processing = True
                 transcript = transcribe_audio(audio['bytes'], whisper_model)
+                st.session_state.is_processing = False
             
             # Validation: Check if transcript is empty or too short
             words = transcript.split()
@@ -181,9 +191,13 @@ def main():
                 # We don't show the submission buttons if the answer is invalid
                 st.stop() 
 
-            st.markdown("**Your transcribed answer:**")
-            with st.container(height=150):
-                st.info(transcript)
+            # Custom styled transcript card (Scrollable & Premium)
+            st.markdown(f"""
+            <div class="transcript-card">
+                <div style="color: #78909C; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 8px;">Transcript</div>
+                <div style="color: #37474F; line-height: 1.5; font-size: 1.05rem;">{transcript}</div>
+            </div>
+            """, unsafe_allow_html=True)
             
             # Store answer
             if len(st.session_state.answers) <= current_q:
@@ -191,18 +205,16 @@ def main():
             else:
                 st.session_state.answers[current_q] = transcript
             
-            # Next question or submit
-            col1, col2 = st.columns(2)
-            
-            if current_q < len(IELTS_QUESTIONS) - 1:
-                with col1:
-                    if st.button("➡️ Next Question", use_container_width=True):
+            # Next question or submit - Full width primary actions (Hidden if processing)
+            if not st.session_state.is_processing:
+                if current_q < len(IELTS_QUESTIONS) - 1:
+                    if st.button("➡️ Next Question", type="primary", use_container_width=True):
                         st.session_state.current_question += 1
                         st.session_state.audio_played = False
                         st.rerun()
-            else:
-                with col1:
-                    if st.button("✅ Submit Test", use_container_width=True):
+                else:
+                    if st.button("✅ Submit Test", type="primary", use_container_width=True):
+                        st.session_state.is_processing = True # Start grading lock
                         st.session_state.test_complete = True
                         st.rerun()
     
@@ -210,7 +222,7 @@ def main():
     elif st.session_state.test_complete:
         st.markdown("### 📋 Your Responses")
         for i, (q, a) in enumerate(zip(IELTS_QUESTIONS, st.session_state.answers)):
-            with st.expander(f"Question {i+1}: {q[:50]}..."):
+            with st.expander(f"Question {i+1}: {q}"):
                 st.write(a)
         
         st.markdown("---")
@@ -221,6 +233,7 @@ def main():
         
         result = grade_submission(IELTS_QUESTIONS, st.session_state.answers)
         
+        st.session_state.is_processing = False # Unlock once done
         thinking_placeholder.empty()
         
         if result:
@@ -228,8 +241,8 @@ def main():
         
         st.markdown("---")
         
-        # Restart option
-        if st.button("🔄 Take Test Again", use_container_width=True):
+        # Restart option - Made secondary for cleaner look
+        if st.button("🔄 Take Test Again", type="secondary", use_container_width=True):
             st.session_state.test_started = False
             st.session_state.current_question = 0
             st.session_state.answers = []
