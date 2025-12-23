@@ -17,11 +17,11 @@ CSS_STYLES = """
 <style>
     /* --- MOBILE APP SIMULATION --- */
     
-    /* 1. Global Background (The "Desk") */
+    /* 1. Global Background (The "Desk") - Clean Off-White */
     .stApp {
-        background-color: #263238;
-        background-image: radial-gradient(#37474F 1px, transparent 1px);
-        background-size: 20px 20px;
+        background-color: #FFFFFF; /* Pure White */
+        background-image: radial-gradient(#F0F2F6 2px, transparent 2px);
+        background-size: 40px 40px;
     }
 
     /* 2. The Phone Frame */
@@ -36,16 +36,22 @@ CSS_STYLES = """
         box-shadow: 0 0 0 2px #333, 20px 20px 50px rgba(0,0,0,0.5);
         height: 800px !important;
         overflow-y: auto !important;
-        color: #37474F !important;
+        color: #263238 !important;
+        font-size: 1.15rem; /* Larger base font */
     }
 
     /* Hide scrollbar */
     .block-container::-webkit-scrollbar { display: none; }
     .block-container { -ms-overflow-style: none; scrollbar-width: none; }
     
-    /* Dark text inside phone */
-    .block-container h1, .block-container h2, .block-container h3, .block-container p, .block-container li {
-        color: #37474F !important;
+    /* Dark text inside phone with increased sizes */
+    .block-container h1 { font-size: 2.5rem !important; }
+    .block-container h2 { font-size: 2rem !important; }
+    .block-container h3 { font-size: 1.6rem !important; }
+    .block-container p, .block-container li {
+        color: #263238 !important;
+        font-size: 1.25rem !important; /* Larger body text */
+        line-height: 1.5;
     }
 
     /* 3. Hide Streamlit Elements */
@@ -75,7 +81,7 @@ CSS_STYLES = """
         color: #333;
     }
     
-    /* Buttons - Minty Style */
+    /* Buttons - Minty Style with Larger Text */
     .stButton > button {
         background: linear-gradient(135deg, #00C853 0%, #009688 100%);
         color: white;
@@ -83,6 +89,7 @@ CSS_STYLES = """
         padding: 0.8rem 2rem;
         border-radius: 30px;
         font-weight: bold;
+        font-size: 1.3rem !important; /* Larger Button Text */
         width: 100%;
         box-shadow: 0 4px 10px rgba(0, 200, 83, 0.3);
         transition: transform 0.2s;
@@ -96,12 +103,13 @@ CSS_STYLES = """
     .progress-bg { background: #B2DFDB; }
     .skill-card { border: 1px solid #E0F2F1; }
     
-    /* Expanders */
+    /* Expanders with Larger Headers */
     .streamlit-expanderHeader, div[data-testid="stExpander"] details summary {
         background-color: white !important;
         color: #37474F !important;
         border-radius: 10px;
         border: 1px solid #B2DFDB;
+        font-size: 1.25rem !important; /* Larger Expander Header */
     }
     .streamlit-expanderHeader:hover, div[data-testid="stExpander"] details summary:hover {
         color: #009688 !important;
@@ -109,6 +117,7 @@ CSS_STYLES = """
     .streamlit-expanderContent, div[data-testid="stExpander"] details {
         background-color: white !important;
         color: #37474F !important;
+        font-size: 1.15rem !important;
     }
     
     /* Donut Chart */
@@ -129,7 +138,7 @@ CSS_STYLES = """
         align-items: center; justify-content: center;
         box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-    .overall-score { font-size: 3.5rem; }
+    .overall-score { font-size: 4rem; font-weight: 800; }
     
     /* Progress Dots */
     .progress-dots { display: flex; justify-content: center; gap: 10px; margin-bottom: 1rem; }
@@ -139,11 +148,11 @@ CSS_STYLES = """
     
     /* Thinking Animation */
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .thinking-text { animation: pulse 1.5s infinite; font-size: 1.2rem; color: #009688; text-align: center; }
+    .thinking-text { animation: pulse 1.5s infinite; font-size: 1.5rem; color: #009688; text-align: center; font-weight: 500; }
     
     /* === NEW POLISH === */
     
-    /* Tip Card */
+    /* Tip Card with Larger Text */
     .tip-card {
         background: white;
         border: 1px solid #E0F2F1;
@@ -155,8 +164,8 @@ CSS_STYLES = """
         gap: 10px;
         box-shadow: 0 2px 8px rgba(0,150,136,0.1);
     }
-    .tip-icon { font-size: 1.2rem; }
-    .tip-text { color: #546E7A; font-size: 0.95rem; }
+    .tip-icon { font-size: 1.5rem; }
+    .tip-text { color: #546E7A; font-size: 1.2rem; font-weight: 500; line-height: 1.4; }
     
     /* Enhanced Question Card */
     .question-card {
@@ -169,10 +178,10 @@ CSS_STYLES = """
         border: none;
     }
     .question-card p {
-        font-size: 1.15rem !important;
-        font-weight: 500;
-        color: #263238 !important;
-        line-height: 1.6;
+        font-size: 1.6rem !important; /* Significantly Larger Question */
+        font-weight: 600;
+        color: #1A1A1A !important;
+        line-height: 1.5;
     }
     
     /* Skill Card Enhancements */
@@ -186,18 +195,19 @@ CSS_STYLES = """
         border: none;
     }
     .skill-score {
-        font-size: 2.5rem;
-        font-weight: 800;
+        font-size: 3.2rem;
+        font-weight: 900;
         margin: 0;
         line-height: 1;
+        color: #00796B;
     }
     .skill-label {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #78909C;
-        margin-bottom: 8px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #546E7A;
+        margin-bottom: 10px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
     }
     .progress-bg {
         background: #ECEFF1;
@@ -210,7 +220,7 @@ CSS_STYLES = """
     .progress-fill {
         height: 6px;
         border-radius: 10px;
-        transition: width 0.5s ease;
+        transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     /* Suggestion Card Enhancements */
@@ -235,17 +245,18 @@ CSS_STYLES = """
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1rem;
+        font-size: 1.3rem;
     }
     .icon-yellow { background: #FFF8E1; color: #FFA000; }
     .icon-purple { background: #F3E5F5; color: #9C27B0; }
     
     .correction-box {
-        background: #FAFAFA;
+        background: #F5F7F8;
         padding: 12px;
         border-radius: 12px;
         margin-top: 10px;
         border-left: 3px solid #FFC107;
+        font-size: 1.15rem !important;
     }
     
 </style>
