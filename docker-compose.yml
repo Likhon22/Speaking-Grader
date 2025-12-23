@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  ielts-grader:
+    build: .
+    container_name: ielts-speaking-grader
+    ports:
+      - "8501:8501"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    env_file:
+      - .env
+    volumes:
+      # Optional: Mount for live code changes during development
+      # - .:/app
+      # Persist Whisper model cache (faster restarts)
+      - whisper-cache:/root/.cache/whisper
+    restart: unless-stopped
+    # Resource limits (optional, adjust based on your server)
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+        reservations:
+          memory: 2G
+
+volumes:
+  whisper-cache:
