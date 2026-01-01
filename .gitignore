@@ -38,3 +38,20 @@ ENV/
 
 # Artifacts
 .gemini/
+
+# API Server Logs
+api_server.log
+nohup.out
+
+# Test Files
+test_audio.mp3
+test_*.mp3
+test_*.wav
+
+# Temporary Audio Files
+*.mp3
+*.wav
+*.m4a
+*.webm
+!static/**/*.mp3
+!static/**/*.wav
