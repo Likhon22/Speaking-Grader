@@ -1,9 +1,10 @@
 version: '3.8'
 
 services:
-  ielts-grader:
+  # --- Web Interface (Streamlit) ---
+  ielts-web:
     build: .
-    container_name: ielts-speaking-grader
+    container_name: ielts-speaking-web
     ports:
       - "8501:8501"
     environment:
@@ -11,18 +12,31 @@ services:
     env_file:
       - .env
     volumes:
-      # Optional: Mount for live code changes during development
-      # - .:/app
-      # Persist Whisper model cache (faster restarts)
       - whisper-cache:/root/.cache/whisper
     restart: unless-stopped
-    # Resource limits (optional, adjust based on your server)
     deploy:
       resources:
         limits:
-          memory: 6G
-        reservations:
-          memory: 2G
+          memory: 4G
+
+  # --- Mobile API (FastAPI) ---
+  ielts-api:
+    build: .
+    container_name: ielts-speaking-api
+    command: python run_api.py
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    env_file:
+      - .env
+    volumes:
+      - whisper-cache:/root/.cache/whisper
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4G
 
 volumes:
   whisper-cache:
