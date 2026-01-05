@@ -49,12 +49,25 @@ async def transcribe_speech(
     global whisper_model
 
     # Validate file type
-    allowed_types = ["audio/wav", "audio/mpeg",
-                     "audio/mp4", "audio/x-m4a", "audio/webm"]
-    if audio_file.content_type not in allowed_types:
+    # Normalize and expand allowed MIME types
+    incoming_type = (audio_file.content_type or "").lower().strip()
+    allowed_types = [
+        "audio/wav", "audio/mpeg", "audio/mp4", 
+        "audio/x-m4a", "audio/m4a", "audio/aac",
+        "audio/webm", "application/octet-stream"
+    ]
+    
+    # Check by MIME type OR by file extension as a fallback
+    is_valid = incoming_type in allowed_types
+    if not is_valid and audio_file.filename:
+        ext = audio_file.filename.lower()
+        if ext.endswith(('.m4a', '.mp3', '.wav', '.webm', '.aac', '.mp4')):
+            is_valid = True
+
+    if not is_valid:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid file type. Allowed: {', '.join(allowed_types)}"
+            detail=f"Invalid file type ({incoming_type}). Allowed: wav, mp3, m4a, webm, aac"
         )
 
     # Check file size (max 25MB)
